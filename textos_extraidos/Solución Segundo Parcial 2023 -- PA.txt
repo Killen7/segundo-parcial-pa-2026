@@ -1,0 +1,144 @@
+Tecnólogo Informático – San José
+Programación Avanzada
+Solución Segundo Parcial 2023
+Ejercicio 1 (30 puntos)
+Parte a) Describa muy brevemente 4 de los criterios para la asignación de responsabilidades vistos 
+en el curso.
+Expert: responsabilizar a quien tenga la información necesaria.
+Creator: a quién responsabilizar de la creación de un objeto.
+Bajo Acoplamiento: evitar que un objeto interactúe con demasiados objetos.
+Alta Cohesión: evitar que un objeto haga demasiado trabajo.
+Parte b)
+Nota: en el diagrama de inicioCompra() el mensaje 2.1 se puede reemplazar por una iteración en la 
+colección de funciones para hacer la búsqueda de la entrada.
+
+
+Nota: Se eligió hacer links en ambos sentidos entre e y func, sin embargo basta la asociación de en 
+un solo sentido para cumplir las postcondiciones de la operación agregarEntrada().
+
+
+Ejercicio 2 (30 puntos) 
+Parte a)  Describa el Patrón de Diseño Factory y brinde un ejemplo de implementación.
+Es un patrón que se utiliza para quebrar dependencia. Una fábrica es un objeto que tiene la 
+responsabilidad de crear instancias que realicen una interfaz determinada (típicamente el Sistema). 
+La fábrica crea instancias que realizan la interfaz. El invocador quedará acoplado a la fábrica pero 
+no dependerá del realizador de la interfaz.
+class Interfaz {
+    public:
+        virtual void oper() = 0;
+};
+class Controlador : public Interfaz {
+    public:
+        void oper();
+};
+class Factory {
+    public:
+        static Interfaz * getObjeto();
+};
+Interfaz * Factory::getObjeto() { 
+    return new Controlador();
+}
+int main () {
+    Interfaz * i = Factory::getObjeto();
+    i->oper();
+    // . . .
+}
+ 
+Parte b)
+
+
+Una cuenta diferida no es una cuenta básica dada la diferencia entre depósito y transferencia; por 
+otro lado la cuenta con notificación sí puede verse como una especialización de cuenta básica. 
+// CuentaBasica.h
+class CuentaBasica : public ICollectible {
+    private:
+        int nro;
+    public:
+        CuentaBasica(int);
+        virtual int getNumero();
+        virtual float balance();
+        virtual void retiro(float);
+        virtual void deposito(float);
+};
+// CuentaNotificacion.h
+class CuentaNotificacion : public CuentaBasica {
+    private:
+        String mailTitular;
+        float umbral;
+    public:
+        CuentaNotificacion(int, String, float);
+        void retiro(float);
+};
+// CuentaNotifiacion.cc
+CuentaNotificacion::CuentaNotificacion(int nro, String mail, float 
+umbral) : CuentaBasica(nro), mailTitular(mail), umbral(umbral) {}
+void CuentaNotificacion::retiro(float f) {
+    this->CuentaBasica::retiro(f);
+    if (this->balance() < this->umbral)
+        Utilidades::getInstance()->enviarNotificacion(this-> 	
+	
+	
+	
+	
+	
+	
+	
+    mailTitular, this->getNumero());
+}
+// CuentaDiferida.h
+class CuentaDiferida {
+    private:
+        ICollection * cuentasHabilitadas;
+        CuentaBasica * cuenta;
+    public:
+        CuentaDiferida(int);
+        int getNumero();
+        float balance();
+        void deposito(float);
+        void transferencia(int, float);
+        void agregarCuenta(CuentaBasica *);
+        void quitarCuenta(CuentaBasica *);
+};
+
+
+// CuentaDiferida.cc
+CuentaDiferida::CuentaDiferida(int nro) :
+  cuenta(new CuentaBasica(nro)), cuentasHabilitadas(new List()) {}
+int CuentaDiferida::getNumero() {
+    return this->cuenta->getNumero();
+}
+float CuentaDiferida::balance() {
+    return this->cuenta->balance();
+}
+void CuentaDiferida::deposito(float f) {
+    this->cuenta->deposito(f);
+}
+void CuentaDiferida::transferencia(int nro, float f) {
+    CuentaBasica * c;
+    IIterator * i = this->cuentasHabilitadas->getIterator();
+    while (i->hasCurrent()) {
+        c = (CuentaBasica *) i->current();
+        if (c->getNumero() == nro) {
+            this->cuenta->retiro(f);
+            c->deposito(f);
+            break;
+        }
+        i->next();
+    }
+    delete i;
+}
+void CuentaDiferida::agregarCuenta(CuentaBasica * c) {
+    this->cuentasHabilitadas->add(c);
+}
+void CuentaDiferida::quitarCuenta(CuentaBasica * c) {
+    this->cuentasHabilitadas->remove(c);
+}
+// Utilidades.h
+class Utilidades {
+    private:
+        static Utilidades * instance;
+        Utilidades();
+    public:
+        static Utilidades * getInstance();
+        void enviarNotificacion(String, int);
+};

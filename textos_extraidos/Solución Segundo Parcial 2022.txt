@@ -1,0 +1,99 @@
+Solución Segundo Parcial 2022 
+Programación Avanzada 
+Ejercicio 1) 
+
+
+Ejercicio 2) 
+Parte a)
+class ISistemaDeArchivo {
+    public:
+        virtual void crearArchivo(int idDir, int idArch, int tam) = 0;
+        virtual int calcularTamanoElemento(int id) = 0;
+        virtual ~ISistemaDeArchivo();
+};
+class SistemaDeArchivo: public ISistemaDeArchivo {
+    public:
+        static SistemaDeArchivo * getInstance();
+        ~SistemaDeArchivo();
+        void crearArchivo(int idDir, int idArch, int tam);
+        int calcularTamanoElemento(int id);
+    private:
+        static SistemaDeArchivo * instancia;
+        IDictionary * elementos;
+        SistemaDeArchivo();
+};
+        
+class Elemento: public ICollectible {
+    public:
+        Elemento(int id);
+        ~Elemento();
+        virtual int calcularTamano() = 0;
+    private:
+        int id;
+};
+class Archivo: public Elemento {
+    public:
+        Archivo(int id, int tam);
+        int calcularTamano();
+    private:
+        int tamano;
+};
+
+
+class Directorio : public Elemento {
+    public:
+        Directorio(int id);
+        ~Directorio();
+        int calcularTamano();
+        Archivo * crearArchivo(int idArch, int tam);
+    private:
+        IDictionary * contenido;
+};
+Parte b)
+void SistemaDeArchivo::crearArchivo(int idDir, int idArch, int tam) {
+    IKey * directoryKey = new KeyInteger(idDir);
+    Directorio * directorio = (Directorio *) elementos- >find(directoryKey);
+    delete directoryKey;
+    if (directorio != NULL) {
+        Archivo * archivo = directorio->crearArchivo(idArch, tam);
+        elementos->add(new KeyInteger(idArch), archivo);
+    }
+    else {
+        throw invalid_argument("Directorio no válido");
+    }
+}
+int SistemaDeArchivo::calcularTamanoElemento(int id) {
+    IKey * ek = new KeyInteger(id);
+    Elemento * elem = (Elemento *) elementos->find(ek);
+    delete ek;
+    if (elem != NULL)
+        return elem->calcularTamano();
+    else
+        throw invalid_argument("No existe elemento con el id pasado");
+}
+Elemento::Elemento(int id) : id(id) {}
+Elemento::~Elemento() {}
+int Directorio::calcularTamano() {
+    IIterator * it = this->contenido->getIterator();
+    Elemento * elemento;
+    int tam = 0;
+    while (it->hasCurrent()) {
+        elemento = (Elemento *) it->getCurrent();
+        tam += elemento->calcularTamano();
+        it->next();
+    }
+    delete it;
+    return tam;
+}
+
+
+Archivo * Directorio::crearArchivo(int idArch, int tam) {
+    Archivo * archivo = new Archivo(idArch, tam);
+    contenido->add(new KeyInteger(idArch), archivo);
+    return archivo;
+}
+Archivo::Archivo(int id, int tam) : Elemento(id), tamano(tam) {}
+ 
+int Archivo::calcularTamano() {
+    return this->tamano;
+}

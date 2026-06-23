@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrenador PA - Segundo Parcial</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1>PA Study</h1>
+        <p class="subtitle">Segundo Parcial</p>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard">
+          <span class="icon">📊</span>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-view="exams">
+          <span class="icon">📁</span>
+          <span>Exámenes</span>
+        </button>
+        <button class="nav-item" data-view="patterns">
+          <span class="icon">🧩</span>
+          <span>Patrones</span>
+        </button>
+        <button class="nav-item" data-view="tutoriales">
+          <span class="icon">📖</span>
+          <span>Paso a Paso</span>
+        </button>
+        <button class="nav-item" data-view="flashcards">
+          <span class="icon">🎴</span>
+          <span>Flashcards</span>
+        </button>
+        <button class="nav-item" data-view="quiz">
+          <span class="icon">📝</span>
+          <span>Quiz</span>
+        </button>
+        <button class="nav-item" data-view="checklist">
+          <span class="icon">✅</span>
+          <span>Checklist</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-icon" id="themeToggle" title="Cambiar tema">🌙</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menú">☰</button>
+        <h2 id="pageTitle">Dashboard</h2>
+      </header>
+
+      <div class="content" id="content">
+        <!-- Las vistas se inyectan aquí -->
+      </div>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

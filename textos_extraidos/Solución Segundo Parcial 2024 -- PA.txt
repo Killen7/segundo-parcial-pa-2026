@@ -1,0 +1,105 @@
+Tecnólogo Informático – San José 
+Programación Avanzada 
+Solución Segundo Parcial 2024 
+Ejercicio 1 (30 puntos)
+a)
+Realizar los Diagramas de Comunicación de las 2 operaciones del sistema, indicando el tipo 
+de visibilidad en todos los mensajes. 
+
+
+b)
+Realizar el Diagrama de Clases de Diseño resultante 
+ 
+
+
+Ejercicio 2 (30 puntos) 
+Parte a)
+class Subject { 
+    public: 
+        void notifyObservers(Event * ev); 
+        void addObserver(Observer * obs); 
+        void removeObserver(Observer * obs); 
+        void clearObservers(); 
+        virtual ~Subject() {}; 
+        virtual void onCancel(Observer * obs) = 0; 
+    private: 
+        ICollection * observers; 
+}; 
+void Subject::notifyObservers(Event * ev){ 
+    IIterator * it = this->observers->getIterator(); 
+    Observer * o; 
+    while (it->hasCurrent()) { 
+        o = (Observer *) it->current(); 
+        o->notify(ev); 
+        if(ev->isCancelled()){ 
+            this->onCancel(o); 
+            break; 
+        } 
+        it->next(); 
+    } 
+    delete it; 
+} 
+void Subject::addObserver(Observer * obs){ 
+    this->observers->add(obs); 
+} 
+void Subject::removeObserver(Observer * obs){ 
+    this->observers->remove(obs); 
+} 
+void Subject::clearObservers(){ 
+    IIterator * it = this->observers->getIterator(); 
+    while (it->hasCurrent()) { 
+        this->remove(it->current()); 
+        it->next(); 
+    } 
+    delete it; 
+} 
+
+
+class Observer: public ICollectible { 
+    public: 
+        virtual void notify(Event * ev) = 0; 
+        virtual ~Observer() {}; 
+}; 
+Parte b) 
+class Sistema: public Subject { 
+    public: 
+        string comprar(int idProd, int cant); 
+        void onCancel(Observer * tienda); 
+    private: 
+        Tienda * tiendaConStock; 
+}; 
+string Sistema::comprar(int idProd, int cant){ 
+    this->tiendaConStock = NULL; 
+    EventoCompra * ec = new EventoCompra(idProd, cant); 
+    this->notifyObservers(ec); 
+    if(this->tiendaConStock != NULL) 
+        return this->tiendaConStock->getNombre(); 
+    else { 
+        delete c; 
+        throw invalid_argument("No hay esa cantidad de stock."); 
+    } 
+} 
+void Sistema::onCancel(Observer * tienda){ 
+    this->tiendaConStock = (Tienda *) tienda; 
+} 
+class Tienda: public Observer { 
+    public: 
+        string getNombre(); 
+        void notify(Event * ev); 
+    private: 
+        IDictionary * productos; 
+        string nombre; 
+}; 
+
+
+void Tienda::notify(Event * ev) { 
+    EventoCompra * ec = (EventoCompra *) ev; 
+    IKey * key = new KeyInt (ec->getIdProd()); 
+    Producto * p = (Producto *) this->productos->find(key); 
+    if(p != NULL && (p->getStock() >= ec->getCant())) { 
+        int nuevoStock = p->getStock() - ec->getCant(); 
+        p->setStock(nuevoStock); 
+        ev->cancel(); 
+    } 
+    delete key; 
+} 

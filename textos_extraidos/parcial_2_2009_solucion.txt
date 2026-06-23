@@ -1,0 +1,177 @@
+UNIVERSIDAD DE LA REPÚBLICA | ADMINISTRACIÓN NACIONAL DE LA EDUCACIÓN PÚBLICA 
+CONSEJO DE EDUCACIÓN TÉCNICO PROFESIONAL | FACULTAD DE INGENIERÍA 
+______________________________________________________________________ 
+TECNÓLOGO EN INFORMÁTICA 
+ 
+1 
+ 
+Programación Avanzada 
+SEGUNDO PARCIAL – 14/07/2009 
+SOLUCIÓN 
+ 
+ 
+ 
+ 
+Problema 1 (Total: 18 puntos) [MO] 
+ 
+Respuestas a los ejercicios de Múltiple Opción: 
+ 
+PROBLEMA 1 
+Pregunta 1: 
+Pregunta 2: 
+Pregunta 3: 
+Pregunta 4: 
+A 
+C 
+A 
+D 
+ 
+ 
+Problema 2 (Total: 10 puntos)[Práctico] 
+ 
+Linea  3: Constructor de BASE 
+          Constructor de DERIVADA 
+ 
+Linea  6: Funcion A de DERIVADA 
+Linea  7: Funcion A de BASE 
+ 
+Linea  9: Funcion B de BASE 
+Linea 10: Funcion B de BASE 
+ 
+Linea 12: Funcion C de BASE 
+Linea 13: Funcion C de BASE 
+ 
+Linea 15: Funcion D de DERIVADA 
+Linea 16: Funcion D de DERIVADA 
+ 
+Linea 18: Destructor de DERIVADA 
+          Destructor de BASE 
+ 
+ 
+ 
+
+
+UNIVERSIDAD DE LA REPÚBLICA | ADMINISTRACIÓN NACIONAL DE LA EDUCACIÓN PÚBLICA 
+CONSEJO DE EDUCACIÓN TÉCNICO PROFESIONAL | FACULTAD DE INGENIERÍA 
+______________________________________________________________________ 
+TECNÓLOGO EN INFORMÁTICA 
+ 
+2 
+ 
+Problema 3 (Total: 32 puntos)[Práctico] 
+ 
+ 
+ 
+ 
+ 
+Sistema
+b:Bus
+t:Tarjeta
+Linea
+p:Parada
+Tarjeta
+Bus
+Parada
+tic:Ticket
+Ticket
+Ticket
+altaTicketsDeBus(dT:Set[DataTicket], bus:matricula)
+2*: [Para cada IDTarjeta en dT_i] t := find(iDTarjeta)
+1: b := find(bus)
+3*: altaTicket(dT_i, t)
+3*.3: altaTicket(tic)
+3*.3.1: add(tic)
+3*.1: create(dt_i)
+3*.2: add(tic)
+3*.4: altaTicket(tic,IDParada)
+3*.4.1: p := find(IDParada)
+3*.4.2: add(tic)
+dt_i son los
+DataTicket
+del conjunto
+Ticket
+3*.2.1: add(tic)
+IDParada es el
+identificador de la
+parada en dt_i
+tic:Ticket
+3*.2.2: addParada(p)
+Se asocia con la parada
+
+
+UNIVERSIDAD DE LA REPÚBLICA | ADMINISTRACIÓN NACIONAL DE LA EDUCACIÓN PÚBLICA 
+CONSEJO DE EDUCACIÓN TÉCNICO PROFESIONAL | FACULTAD DE INGENIERÍA 
+______________________________________________________________________ 
+TECNÓLOGO EN INFORMÁTICA 
+ 
+3 
+ 
+ 
+ 
+ 
+ 
+NOTA: No se agregan las operaciones para obtener atributos de las clases ni aquellas que 
+asocian instancias. Tampoco se agregan los parámetros ni tipos de retorno de las operaciones. 
+ 
+Las dependencias corresponden a visibilidad por parámetro, mientras que las asociaciones con 
+navegabilidad se corresponden a una visibilidad por atributo. 
+Sistema
+b:Bus
+lin:Linea
+p:Parada
+Linea
+Bus
+tic:Ticket
+Ticket
+monto := consultarRecaudacion(idP:Integer, idL:Integer)
+1: lin := find(idL)
+2: monto := getRecaudacion(idP)
+2.1*: [for each] b := next()
+2.2*: res := getRecaudacion(idP)
+2.2*.1*: [for each] tic := next()
+2.2*.2*: ok := enParada(idP)
+2.2*.3*: [ok] res := getMonto()
+2.2*.3*.1: idPar := getIDParada()
+monto = suma de los res
+Si (idPar == idP)
+   ok = true
+sino
+   ok = false
+IDParada
+Parada
+altaTicket()
+IDTarjeta
+Tarjeta
+altaTicket()
+getRecaudacion()
+matricula
+Bus
+altaTicket()
+getRecaudacion()
+IDLinea
+Línea
+enParada()
+monto
+fecha
+nro_pasajes
+Ticket
+1..*
+1
+1..*
+1
+*
+1..*
+1..*
+altaTicketDeBus()
+consultarRecaudacion()
+Sistema
+*
+*
++getIDTarjeta()
++getIDParada()
++getMonto()
++getFecha()
++getNroPasajes()
+«datatype»
+DataTicket
+*

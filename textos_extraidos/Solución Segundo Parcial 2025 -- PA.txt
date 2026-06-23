@@ -1,0 +1,89 @@
+Tecnólogo Informático – San José 
+Programación Avanzada 
+Solución Segundo Parcial 2025 
+Ejercicio 1 (30 puntos)
+
+
+Ejercicio 2 (30 puntos)
+a)  Se utiliza el patrón state con los siguientes roles:
+• Viaje es el Contexto
+• Estado es el Estado
+• Solicitado, EsperandoAuto, Viajando y Finalizado son los Estados Concretos
+b) 
+class CtldViajes { 
+    private: 
+        IDictionary * viajes; 
+    public:  
+        void nuevoViaje(int); 
+        void cambiarEstado(int); 
+}; 
+void CtldViajes::nuevoViaje(int idUsuario) { 
+    int idViaje = Utils::getInstance()->nuevoIdViaje(); 
+    IKey * k = new KeyInt(idViaje); 
+    Viaje * v = new Viaje(idViaje, idUsuario); 
+    this->viajes->add(v, k); 
+}    
+void CtldViajes::cambiarEstado(int idViaje) { 
+    IKey * k = new KeyInt(idViaje); 
+    Viaje * v = (Viaje *) this->viajes->find(); 
+    v->cambiarEstado(); 
+} 
+
+
+class Viaje : public ICollectible { 
+    private: 
+        int idViaje; 
+        int idUsuario; 
+        int idChofer; 
+        Estado * estado; 
+    public: 
+        Viaje(int, int); 
+        void cambiarEstado(); 
+}; 
+Viaje::Viaje(int idViaje, int idUsuario) { 
+    this->idViaje = idViaje; 
+    this->idUsuario = idUsuario; 
+    this->estado = new Solicitado(); 
+    this->estado->setViaje(this); 
+} 
+void Viaje::cambiarEstado() { 
+    Estado * nuevoEstado = this->estado->darSiguiente(); 
+    nuevoEstado->setViaje(this); 
+    delete this->estado; 
+    this->estado = nuevoEstado; 
+} 
+c) 
+class Estado { 
+    public: 
+        virtual Estado * darSiguiente() = 0; 
+        virtual void accion() = 0; 
+}; 
+d)
+class EsperandoAuto : public Estado { 
+    private: 
+        Viaje * v; 
+    public: 
+        Estado * darSiguiente(); 
+        void accion(); 
+}; 
+Estado * EsperandoAuto::darSiguiente() { 
+    return new Viajando(); 
+}; 
+
+
+void EsperandoAuto::accion() { 
+    Utils::getInstance()->reservarPago(v->getIdUsuario(), v->getIdChofer()); 
+} 
+class Viajando : public Estado { 
+    private: 
+        Viaje * v; 
+    public: 
+        Viajando * darSiguiente(); 
+        void accion(); 
+}; 
+Estado * Viajando::darSiguiente() { 
+    return new Finalizado(); 
+} 
+void Viajando::accion() { 
+    Utils::getInstance()->efectuarPago(v->getIdUsuario(), v->getIdChofer()); 
+} 

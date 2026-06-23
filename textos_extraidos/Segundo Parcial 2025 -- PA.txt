@@ -1,0 +1,71 @@
+Tecnólogo Informático – San José 
+Programación Avanzada 
+Segundo Parcial 2025 
+• Completar TODAS las hojas con el nombre y el número de cédula.  
+• Comience un nuevo ejercicio en una NUEVA HOJA 
+•  Sólo se contestan dudas acerca de la letra de los ejercicios. 
+•  El parcial dura 2 horas y media. 
+Ejercicio 1 (30 puntos) 
+Se está desarrollando un sistema de gestión de currículum para investigadores. Cada currículum 
+(CV) se identifica por el nombre del investigador y está compuesto por un conjunto de entradas que 
+se ordenan según un identificador único dentro del CV. Las entradas del CV pueden ser una 
+descripción de información personal, información sobre una publicación científica o de un proyecto 
+en las cuales participe el investigador. Para cada publicación se indica su primer autor. Para un 
+proyecto se conoce la lista de participantes, entre los cuales hay un solo responsable, indicado por el 
+atributo correspondiente. Un investigador se dice principal en una publicación si es el primer autor, 
+y en un proyecto si es su responsable. Además, un investigador es siempre el principal en sus 
+propias entradas personales. Considere el siguiente modelo de dominio parcial y contratos para el 
+sistema descripto.
+
+
+Se pide: 
+i.
+Realizar el Diagrama de Comunicación correspondiente a las operaciones del sistema 
+detalladas anteriormente. 
+ii.
+Realizar el Diagrama de Clases de Diseño (DCD) resultante.
+Ejercicio 2 (30 puntos)
+Se está desarrollando una plataforma de soporte a un servicio de viajes urbanos, mediante el cual 
+los usuarios registrados pueden desplazarse entre dos puntos de una ciudad, utilizando vehículos 
+que son proporcionados por choferes también registrados. La figura presenta una parte del diseño de 
+la plataforma. El controlador mantiene una colección de todos los viajes actuales. Cada viaje tiene 
+un estado que cambia según el siguiente esquema:
+• Solicitado: cuando el usuario solicita el viaje y espera a que algún chofer disponible le responda.
+• EsperandoAuto: cuando el chofer confirmó disponibilidad y se está dirigiendo hacia el lugar de 
+origen donde se encuentra el usuario.
+• Viajando: cuando el usuario subió al auto y se encuentra viajando hacia el destino del viaje.
+• Finalizado: cuando el usuario llegó al destino y descendió del auto.
+
+
+A continuación, se describe el comportamiento de las operaciones definidas:
+CtldViajes::nuevoViaje(idUsuario:Integer):Integer 
+Genera un nuevo viaje con el identificador del usuario (el del chofer se asignará posteriormente), 
+con estado Solicitado, y lo almacena en la colección de viajes de sistema. El identificador del nuevo 
+viaje se genera con la operación Utils::nuevoIdViaje().
+CtldViajes::cambiarEstado(idViaje:Integer) 
+Cambia el estado del viaje identificado por el parámetro, al siguiente estado.
+Viaje::cambiarEstado() 
+Cambia al siguiente estado del viaje.
+Estado::darSiguiente():Estado 
+Devuelve una instancia del siguiente estado, según el diseño del diagrama.
+Estado::accion() 
+En Solicitado y Finalizado, no hace nada. En EsperandoAuto invoca la operación 
+Utils::reservarPago() desde el usuario para el chofer, utilizando la información 
+almacenada en los datos del viaje. En Viajando invoca la operación Utils::efectuarPago() 
+de forma similar a la anterior.
+Se pide:
+a) Indicar si el diseño planteado utiliza algún patrón de diseño. En caso afirmativo, decir el 
+nombre del patrón e identificar los roles de las clases participantes.
+b) Implementar en C++ el .h y .cpp de las clases CtldViajes y Viaje.
+c) Implementar en C++ el .h de la interfaz Estado.
+d) Implementar en C++ el .h y .cpp de las clases EsperandoAuto y Viajando.
+ 
+Notas: 
+•
+No se pueden agregar ni utilizar más operaciones que las definidas en el diseño anterior.
+•
+Puede asumir que existen operaciones get y set para los atributos, y utilizarlas.
+•
+Implementar los constructores que sean necesarios. No implementar destructores.
+•
+Se deben utilizar las colecciones y diccionarios utilizados en el curso.

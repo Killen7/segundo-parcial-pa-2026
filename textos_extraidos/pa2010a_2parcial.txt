@@ -1,0 +1,85 @@
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+Segundo Parcial 2010 
+ 
+Presentar la resolución del parcial: 
+· Indique su nombre completo y número de cédula en cada hoja. 
+· Numere todas las hojas e indique la cantidad total de hojas que entrega en la primera. 
+· · Comience cada ejercicio en una hoja nueva. 
+· El parcial es individual y sin material. APAGUE SU CELULAR. 
+· Escriba con lápiz y de forma prolija. 
+· Duración: 3 horas. 
+ 
+ 
+Problema 1 (10 puntos) 
+ 
+Pregunta 1) 
+Nombrar tres criterios GRASP y explicar brevemente en qué consiste cada uno. 
+ 
+Pregunta 2) 
+Describa brevemente las responsabilidades que pueden ser asignadas a una 
+colección de objetos en un diagrama de comunicación. 
+ 
+Pregunta 3) 
+Defina brevemente cómo se mapean a C++ las relaciones de generalización, 
+realización y dependencia. 
+ 
+ 
+Problema 2 (25 puntos) 
+ 
+La empresa para la cual usted trabaja se ha embarcado en el desarrollo de un 
+sistema para el registro de sus ventas. Como resultado de la fase de análisis, 
+además de generarse los artefactos habituales, se detectó que las clases fuertes del 
+modelo de dominio son Venta y EspecificaciónDeProducto. Además, se ha decido 
+utilizar un controlador que será responsable de manejar las colecciones de las 
+clases fuertes. 
+A usted se le han asignado los casos de uso calcular total de venta, obtener 
+información sobre un producto y borrar una venta. El modelo de dominio, los DSS y 
+los contratos para estos casos de uso se muestran a continuación. 
+ 
+ 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+ 
+ 
+ 
+ 
+SE PIDE: Realice los diagramas de comunicación para las operaciones que se 
+especifican en los diagramas de secuencia. Los diagramas deben mostrar las 
+visibilidades Utilizadas, cumplir con los contratos y con las decisiones de diseño que 
+ya han sido tomadas. 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+ 
+Problema 3 (25 puntos) 
+ 
+Se desea construir un repositorio de documentos. El mismo debe ser capaz de 
+manejar tanto documentos en formato binario (por ejemplo PDF’s) como 
+documentos de texto plano. De los últimos es necesario mantener registrados todos 
+los cambios que hayan sufrido desde su creación. Como parte de la etapa de diseño 
+se construyó la siguiente colaboración: 
+ 
+ 
+ 
+ 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+Se cuenta con las siguientes clases ya implementadas como parte de la 
+infraestructura: 
+ 
+ 
+ 
+SE PIDE:  
+Implementar en C++ completamente la colaboración salvo la clase Cambios. 
+Del datatype DataDocumento es necesario incluir únicamente su módulo de 
+definición, es decir su .h. 
+ 
+OBSERVACIONES:  
+ 
+No es necesario definir colecciones concretas. 
+ 
+La operación removeCurrent() de la interfaz IIterator remueve el 
+elemento actual de la colección y lo devuelve. A la vez posiciona el iterador 
+en el elemento siguiente al removido. 

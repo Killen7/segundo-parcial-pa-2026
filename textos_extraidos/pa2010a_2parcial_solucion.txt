@@ -1,0 +1,365 @@
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+Segundo Parcial 2010 
+Solución 
+ 
+Presentar la resolución del parcial: 
+· Indique su nombre completo y número de cédula en cada hoja. 
+· Numere todas las hojas e indique la cantidad total de hojas que entrega en la primera. 
+· · Comience cada ejercicio en una hoja nueva. 
+· El parcial es individual y sin material. APAGUE SU CELULAR. 
+· Escriba con lápiz y de forma prolija. 
+· Duración: 3 horas. 
+ 
+ 
+Problema 1 (10 puntos) 
+ 
+Pregunta 1) 
+Nombrar tres criterios GRASP y explicar brevemente en qué consiste cada uno. 
+ 
+Pregunta 2) 
+Describa brevemente las responsabilidades que pueden ser asignadas a una 
+colección de objetos en un diagrama de comunicación. 
+ 
+Pregunta 3) 
+Defina brevemente cómo se mapean a C++ las relaciones de generalización, 
+realización y dependencia. 
+ 
+ 
+Problema 2 (25 puntos) 
+ 
+SE PIDE: Realice los diagramas de comunicación para las operaciones que se 
+especifican en los diagramas de secuencia. Los diagramas deben mostrar las 
+visibilidades Utilizadas, cumplir con los contratos y con las decisiones de diseño que 
+ya han sido tomadas. 
+ 
+i) Calcular total de venta. 
+ 
+:Fachada
+tot := calcularTotalDeVenta(idVenta)
+:Venta
+<<association>>
+1 : v := find(idVenta)
+v : Venta
+<<local>>
+2 : tot := calcularTotal()
+ 
+ 
+ 
+ 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+:Venta
+tot := calcularTotal()
+:LineaDeVenta
+<<association>>
+1* [foreach] : lv := next()
+lv : LineaDeVenta
+<<local>>
+2* : subLV := calcularSubTotal()
+El total se calcula como la sumatoria de 
+todos los subtotales de las líneas
+ 
+: LineaDeVenta
+subLV := calcularSubTotal()
+:EspecificacionDe
+Producto
+<<association>>
+1 : precio := getPrecio()
+El subtotal se calcula como la multiplicación 
+del precio del producto y la cantidad
+ 
+ 
+ii) Obtener Información de un Producto 
+ 
+:Fachada
+prodInfo := obtenerInfoProducto(idEspProd)
+:Productos
+<<association>>
+1 : prod := find(idEspProd)
+prod:Especificaci
+onDeProducto
+<<local>>
+2 : prodInfo := obtenerInfoProducto()
+ 
+ 
+ 
+:EspecificacionDe
+Producto
+prodInfo := obtenerInfoProducto()
+:LineaDeVenta
+<<association>>
+lv:LineaDeVenta
+<<local>>
+Se calcula el total de elementos vendidos 
+sumando la cantidad de cada linea de venta. 
+Se devuelve un datavalue de 
+InfoEspecificacionDeProducto con la 
+información de la especificación y el total de 
+elementos vendidos
+1* [foreach] : lv := next()
+2* : cantidad := getCantidad()
+ 
+ 
+iii) Borrar una venta 
+ 
+:Fachada
+borrarVenta(idVenta)
+:Venta
+<<association>>
+1 : v := find(idVenta)
+2 : remove(v)
+v :Venta
+<<local>>
+3 : destroy()
+ 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+ 
+: Venta
+destroy()
+:LineaDeVenta
+<<association>>
+lv:LineaDeVenta
+<<local>>
+1* [foreach] : lv := next()
+2* : remove(lv)
+3* : destroy()
+ 
+this : 
+LineaDeVenta
+destroy()
+:EspecificacionDe
+Producto
+<<association>>
+1 : removerLineaDeVenta(this)
+ 
+ 
+:EspecificacionDe
+Producto
+removerLineaDeVenta(lv)
+: LineaDeVenta
+<<association>>
+1 : remove(lv)
+ 
+ 
+ 
+Problema 3 (25 puntos) 
+ 
+SE PIDE: Implementar en C++ completamente la colaboración salvo la clase 
+Cambios. Del datatype DataDocumento es necesario incluir únicamente su módulo 
+de definición, es decir su .h. 
+ 
+// DataDocumento.hh 
+class DataDocumento : public ICollectible 
+{ 
+private: 
+ 
+String nombre; 
+ 
+String descripcion; 
+ 
+int cantidadVersiones; 
+ 
+public: 
+ 
+DataDocumento(String nom, String desc, int cantVersiones); 
+ 
+void setNombre(String nom); 
+ 
+void setDescripcion(String desc); 
+ 
+void setCantidadVersiones(int cantVersiones); 
+ 
+String getNombre(); 
+ 
+String getDescripcion(); 
+ 
+int getCantidadVersiones(); 
+}; 
+ 
+ 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+// Documento.hh 
+class Documento : public ICollectible 
+{ 
+private: 
+ 
+String nombre; 
+ 
+String descripcion; 
+ 
+public: 
+ 
+virtual DataDocumento getDataDocumento(); 
+ 
+virtual ~Documento(); 
+}; 
+ 
+ 
+// Documento.cc 
+DataDocumento Documento::getDataDocumento() 
+{ 
+ 
+return DataDocumento(this->nombre, this->descripcion, 1); 
+} 
+ 
+Documento::~Documento(){} 
+ 
+ 
+// Binario.hh 
+class Binario : public Documento 
+{ 
+}; 
+ 
+ 
+// TextoPlano.hh 
+class TextoPlano : public Documento 
+{ 
+private: 
+ 
+ICollection * cambios; 
+ 
+public: 
+ 
+DataDocumento getDataDocumento(); 
+ 
+~TextoPlano(); 
+}; 
+ 
+ 
+// TextoPlano.cc 
+DataDocumento TextoPlano::getDataDocumento() 
+{ 
+ 
+DataDocumento aux = Documento::getDataDocumento(); 
+ 
+aux.setCantidadVersiones(this->cambios->size() + 1); 
+ 
+ 
+return aux; 
+} 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+ 
+TextoPlano::~TextoPlano() 
+{ 
+ 
+IIterator * i = this->cambios->getIterator(); 
+ 
+ 
+while (i->hasCurrent()) 
+ 
+{ 
+ 
+ 
+delete i->removeCurrent(); 
+ 
+} 
+ 
+ 
+delete i; 
+ 
+delete this->cambios; 
+} 
+ 
+ 
+// ControladorDocumentos.hh 
+class ControladorDocumentos 
+{ 
+private: 
+ 
+static ControladorDocumentos * instance; 
+ 
+IStringDictionary * documentos; 
+ 
+ 
+ControladorDocumentos(); 
+ 
+public: 
+ 
+static ControladorDocumentos * getInstance(); 
+ 
+ 
+ 
+ICollection * listarDocumentos(); 
+ 
+void borrarDocumento(String nombre); 
+}; 
+ 
+ 
+// ControladorDocumentos.cc 
+ControladorDocumentos * ControladorDocumentos::instance = NULL; 
+ 
+ControladorDocumentos::ControladorDocumentos() 
+{ 
+ 
+this->documentos = new List(); 
+} 
+ 
+ 
+
+
+Tecnólogo en Informática (Paysandú)  – Programación Avanzada – Curso 2010 
+ControladorDocumentos * ControladorDocumentos::getInstance() 
+{ 
+ 
+if (ControladorDocumentos::instance == NULL) 
+ 
+{ 
+ 
+ 
+ControladorDocumentos::instance = 
+new ControladorDocumentos(); 
+ 
+} 
+ 
+ 
+return ControladorDocumentos::instance; 
+} 
+ 
+ 
+ICollection * ControladorDocumentos::listarDocumentos() 
+{ 
+ 
+IIterator * i = this->documentos->getIterator(); 
+ 
+List * resultado = new List(); 
+ 
+ 
+while (i->hasCurrent()) 
+ 
+{ 
+ 
+ 
+// Se crea una copia para devolver 
+ 
+ 
+resultado->add(new DataDocumento( 
+((Documento*)i->getCurrent())-
+>getDataDocumento() 
+)); 
+ 
+ 
+ 
+i->next(); 
+ 
+} 
+ 
+ 
+delete i; 
+ 
+ 
+return resultado; 
+} 
+ 
+void ControladorDocumentos::borrarDocumento(String nombre) 
+{ 
+ 
+delete this->documentos->remove(nombre); 
+} 
+ 

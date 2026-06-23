@@ -1,0 +1,56 @@
+Tecnólogo Informático – San José
+Programación Avanzada
+Segundo Parcial 2022
+!"Completar TODAS las hojas con el nombre y el número de cédula. Numerarlas y escribir el total en la 
+primer hoja."Escriba las hojas de un solo lado.
+!"Sólo se contestan dudas acerca de la letra de los ejercicios.
+!"El parcial dura 2 horas.
+Ejercicio 1 (30 puntos) 
+Se está construyendo un sistema de seguimiento de un proyecto de software que siga el modelo de 
+proceso Iterativo e Incremental como el visto en el curso. Durante una primera etapa se analizó el 
+mismo generándose el modelo de dominio que se puede observar en la figura siguiente.
+El sistema permite definir las etapas de un proceso (ej: Análisis, Diseño, etc.) y las actividades que 
+se realizan en estas etapas (ej: Modelado de Dominio y Especificación de Comportamiento en la 
+etapa de Análisis). Cabe señalar que el nombre de la actividad la identifica dentro de una etapa, 
+pudiendo haber actividades del mismo nombre en diferentes etapas. Además permite definir un 
+conjunto de iteraciones y asignar las etapas a dichas iteraciones. A su vez, para cada iteración se 
+debe definir qué actividades se realizarán ya que no todas las actividades de una etapa se tienen 
+porqué realizar en cada iteración. Para cada actividad en cada iteración, se conoce si la actividad fue 
+realizada o no y quién es el integrante del equipo del proyecto que es responsable por dicha 
+actividad. 
+Adicionalmente al Modelo de Dominio, se definieron dos operaciones que están definidas por los 
+siguientes contratos. 
+
+
+Se pide: 
+i.
+Realice los Diagramas de Comunicación para las operaciones especificadas en los  
+contratos. No es necesario indicar las visibilidades. 
+ii.
+Realice el Diagrama de Clases de Diseño de la solución. 
+Ejercicio 2 (30 puntos)
+Se le ha encomendado la tarea de implementar un prototipo de sistema de archivos. El sistema de 
+archivos contendrá elementos, los cuales tendrán un identificador y podrán ser de dos tipos: 
+directorios, que a su vez podrán contener a otros elementos; o archivos que registrarán el tamaño 
+ocupado. En particular, se le ha pedido implementar las operaciones para crear un archivo en un 
+directorio y calcular el espacio total ocupado por un elemento del sistema. 
+ 
+Se le ha entregado el siguiente diseño parcial que usted deberá respetar:  
+ 
+
+
+Se le ha entregado también las siguientes especificaciones para las operaciones pedidas:
+Se pide: 
+i)  Implementar los .h de la interfaz ISistemaDeArchivo y de las clases SistemaDeArchivo, 
+Elemento, Archivo y Directorio.  
+ii) Implementar en C++ las operaciones especificadas anteriormente y todas aquellas operaciones 
+necesarias para su implementación que pertenezcan a las clases SistemaDeArchivo, Elemento, 
+Archivo y Directorio.  
+Observaciones: 
+• Asuma que existe una implementación estándar de las interfaces ICollectible, 
+ICollection, IIterator, IDictionary e IKey. 
+• Asuma que existe una clase Lista que realiza las interfaces ICollection e IDictionary 
+y una clase KeyInteger que realiza la interfaz IKey. 
+• No defina colecciones concretas.
+• No incluya directivas de preprocesador. 
+• Se debe respetar el diseño parcial dado.  

@@ -1,0 +1,96 @@
+Tecnólogo Informático – San José 
+Programación Avanzada 
+Segundo Parcial 2024 
+• Completar TODAS las hojas con el nombre y el número de cédula. Numerarlas y escribir el total en la 
+primer hoja. Escriba las hojas de un solo lado. 
+• Sólo se contestan dudas acerca de la letra de los ejercicios. 
+• El parcial dura 2 horas y media. 
+Ejercicio 1 (30 puntos)
+En un sistema de enseñanza se desea estimar las horas de dedicación de los estudiantes a las 
+diferentes asignaturas que cursan. Para ello se ha realizado el modelo de dominio, que representa la 
+situación de los estudiantes en un semestre determinado. Los estudiantes cursan asignaturas. Para 
+cada asignatura que cursa un estudiante, puede tener hasta tres asignaturas previas pendientes de 
+aprobación; el valor del atributo booleano condicional depende de si el estudiante tiene alguna 
+asignatura pendiente (para la que está cursando) o si no tiene ninguna. Cada asignatura tiene 
+información de la carga horaria semanal según la modalidad de dictado.
+Si la modalidad es presencial, se tiene un conjunto de clases semanales (por ejemplo, teórico 1, 
+teórico 2, práctico y monitoreo), cada una con su duración. Si la modalidad es virtual sincrónica, se 
+sabe cuántas horas dura cada sesión y la cantidad de sesiones por semana. Si la modalidad es virtual 
+asincrónica, se sabe cuántas intervenciones por semana se espera que haga el estudiante y cuánto 
+tiempo se estima que insume cada intervención.
+Además se cuenta con los siguientes contratos de 2 operaciones del Sistema: 
+
+
+ 
+ 
+Se pide: 
+a)
+Realizar los Diagramas de Comunicación de las 2 operaciones del sistema, indicando el tipo 
+de visibilidad en todos los mensajes. 
+b)
+Realizar el Diagrama de Clases de Diseño resultante. 
+
+
+Ejercicio 2 (30 puntos) 
+Parte a)
+Usted es parte del equipo de desarrollo de un sitio web de compras y se le encomendó la tarea de 
+implementar una variante del patrón Observer para reutilizar luego en la implementación de otros 
+componentes. En esta variante los observadores pueden cancelar la propagación del evento que se 
+notifica. Esto es útil en ciertas ocasiones cuando un observador maneja el evento y no es necesario 
+que los demás observadores sean notificados. El siguiente Diagrama de Clases de Diseño (que 
+deberá respetarse) ilustra las clases que forman el patrón.
+Un observador puede cancelar un evento invocando a ev.cancel() donde ev es el parámetro de 
+la operación notify(ev:Event). Al igual que en el patrón Observer se invoca al método 
+notify() cuando ocurre un evento en el Subject. La operación notify(ev:Event) no tiene 
+método en la clase Observer. La operación notifyObservers(ev:Event), notifica a los 
+observers en forma secuencial (no importa el orden). Si alguno de ellos cancela el evento, entonces 
+deja de notificar al resto de los observers. Un pseudocódigo de la operación es el siguiente:
+Subject::notifyObservers(ev: Event): 
+    Para cada observador obs: 
+        Se invoca a obs.notify(ev) 
+        Si ev.cancelled es true: 
+            se invoca a this.onCancel(obs) 
+            se termina la iteración 
+La operación Subject::onCancel(obs:Observer) es abstracta y se utiliza para avisar que 
+un observador canceló el evento.
+Las operaciones addObserver(obs:Observer) y removeObserver(obs:Observer) 
+agregan y quitan un observador al subject respectivamente mientras que clearObservers() 
+quita a todos los observadores.
+Se pide: Implementar las clases Subject y Observer. No incluir constructores para ninguna de 
+las clases.
+ 
+Parte b)  
+Es necesario implementar el mecanismo de compra del sitio web de compras reutilizando el patrón 
+Observer implementado en la parte anterior. La funcionalidad de comprar se encapsula en la 
+operación comprar(idProd: integer, cant:integer) de la clase Sistema. Al 
+comprar se notifica a todas las tiendas y cada una de ellas inspecciona si hay stock del producto 
+comprado. Si alguna de las tiendas tiene stock del producto que se compra actualiza el stock y 
+cancela el evento para que las demás tiendas no actualicen el stock innecesariamente. La clase 
+
+
+EventoCompra mantiene la información del id del producto y la cantidad que se compra. El 
+diagrama siguiente muestra el diseño que hay que respetar durante la implementación.
+El método comprar(idProd: integer, cant: integer) notifica a las tiendas y 
+devuelve el nombre de la tienda en la cual se hizo la compra, que es la tienda que cancela el evento 
+EventoCompra. Si ninguna tienda canceló el evento se lanza una excepción de tipo 
+invalid_argument. El pseudocódigo del método es el siguiente:
+comprar(idProd: integer, cant: integer):string : 
+    setear tiendaConStock en NULL 
+    crear un ev = EventoCompra(idProd, cant) 
+    invocar a notifyObservers(ev) 
+    si tiendaConStock es NULL: 
+        lanzar una excepción invalid_argument 
+    sino: 
+        devolver el valor del atributo nombre de tiendaConStock 
+La operación onCancel(tienda:Observer) setea el atributo tiendaConStock con el 
+valor que se pasa por parámetro. El método notify(compra: Event) de la clase Tienda 
+busca si tiene el producto indicado en el evento; si es así reduce el stock y cancela el evento. Un 
+pseudocódigo para el método es el siguiente:
+notify(compra): 
+si la tienda tiene el producto y hay suficiente stock: 
+   reducir stock del producto de id = compra.idProducto en compra.cant unidades 
+   invocar a compra.cancel() 
+ 
+Se pide: Implementar las clases Sistema y Tienda. No incluir constructores para la clase Tienda. 
+Nota: Asuma  que  existen  implementaciones de  la  interfaces  IDictionary, ICollection, 
+IKey e IIterator.

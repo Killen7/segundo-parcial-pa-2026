@@ -1,0 +1,69 @@
+Tecnólogo Informático – San José
+Programación Avanzada
+Segundo Parcial 2023
+• Completar TODAS las hojas con el nombre y el número de cédula. Numerarlas y escribir el total en la 
+primer hoja. Escriba las hojas de un solo lado.
+• Sólo se contestan dudas acerca de la letra de los ejercicios.
+• El parcial dura 2 horas y media.
+Ejercicio 1 (30 puntos)
+Parte a) Describa muy brevemente 4 de los criterios para la asignación de responsabilidades vistos 
+en el curso.
+Parte b) Usted es un desarrollador y una cadena de salas de cines le contactó para desarrollar un 
+sistema para la gestión de las películas que ofrece cada sucursal de la cadena. Es importante 
+mantener información acerca de los pagos que se hacen al comprar entradas y la disponibilidad de 
+las butacas para cada función de cada película. Los pagos que realizan los clientes se hacen por un 
+conjunto de entradas. Por ejemplo un cliente puede comprar 3 entradas para una función de una 
+película y pagar por esas 3 entradas. Los pagos se identifican en el sistema por su id que tiene que 
+ser autogenerado al crear el pago. El atributo id debe ir de 1 en adelante. Se determinó que los 
+pagos pueden hacerse tanto con tarjeta como al contado. En el primer caso es necesario saber los 
+datos de la tarjeta que se utilizó para pagar y en el segundo caso se necesita saber con cuánto 
+efectivo pagó y cuánto dinero se dio de vuelto al cliente. 
+Durante la etapa de análisis se generó el siguiente diagrama con un modelo de dominio de la 
+solución. 
+
+
+Es necesario diseñar el Caso de Uso Compra de Entradas Contado que consiste en comprar 
+una o más entradas para una determinada función de una Película pagando al contado. 
+Durante la etapa de análisis se detectaron las siguientes operaciones del sistema para 
+dicho caso de uso. 
+Se pide: 
+a)
+Realizar los Diagramas de Comunicación de las operaciones del sistema mencionadas 
+previamente, indicando el tipo de visibilidad en todos los mensajes y definiendo los nuevos 
+DataTypes que puedan haber surgido. 
+b)
+Realizar el Diagrama de Clases de Diseño resultante.  
+
+
+Ejercicio 2 (30 puntos) 
+Parte a)  Describa el Patrón de Diseño Factory y brinde un ejemplo de implementación.
+ 
+Parte b) Durante el desarrollo del sistema de gestión de una entidad financiera se diseñó la 
+siguiente clase (no se muestran todos los atributos):
+Luego se detectó la necesidad de dos nuevos tipos de cuentas: cuentas diferidas y cuentas con 
+notificación. A continuación se detalla cada una de ellas.
+Las cuentas diferidas soportan depósitos y consultas de balance sobre una cuenta básica que 
+representan, pero tienen la particularidad de no permitir el retiro directo de dinero. En su lugar 
+tienen definido un conjunto de cuentas básicas hacia las cuales pueden transferir capital. En cada 
+transferencia se debe indicar monto y cuenta destino.
+Por otro lado, las cuentas con notificación deben enviar un correo electrónico a su titular cada vez 
+que un retiro resulte en un balance menor a un umbral. Tanto el umbral como el mail del titular son 
+datos de la propia cuenta.
+El cálculo del balance en ambos tipos de cuenta es igual al de la clase CuentaBasica. Para el 
+envío de correos electrónicos se diseñó la siguiente clase:
+OBSERVACIÓN : Todas las operaciones de CuentaBasica son redefinibles.
+Se pide:
+a) Realizar un DCD completo del problema planteado sin modificar las clases CuentaBasica y 
+Utilidades.
+b) Implementar en C++ el diseño realizado en a) teniendo en cuenta lo siguiente:
+•
+Incluir todos los .h
+•
+Incluir únicamente los .cc de los dos nuevos tipos de cuenta
+•
+Incluir constructores pero no destructores
+•
+Asumir que existen implementaciones únicamente de la interfaces ICollection e 
+IIterator usuales y también se cuenta con una implementación de String
+•
+No incluir directivas al preprocesador en el código.

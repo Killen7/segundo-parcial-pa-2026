@@ -1,0 +1,19 @@
+# Entorno virtual Python
+venv/
+
+# Capturas de pantalla generadas para verificación
+screenshots/
+
+# PDFs originales (los PNGs convertidos en imagenes_pa2026/ son los que usa la app)
+PA 2026/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
