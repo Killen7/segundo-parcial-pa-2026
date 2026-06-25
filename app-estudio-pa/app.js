@@ -268,6 +268,7 @@ function renderExamDetail(exam) {
             <div class="page-card">
               <img src="${basePath}/${exam.imageFolder}_pagina_${String(n).padStart(3, '0')}.png" 
                    alt="Página ${n}" loading="lazy"
+                   onclick="openImageModal(this)"
                    onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
               <div class="page-card-caption">Página ${n}</div>
             </div>
@@ -282,6 +283,7 @@ function renderExamDetail(exam) {
               <div class="page-card">
                 <img src="${solPath}/${solution.folder}_pagina_${String(n).padStart(3, '0')}.png" 
                      alt="Solución página ${n}" loading="lazy"
+                     onclick="openImageModal(this)"
                      onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
                 <div class="page-card-caption">Solución página ${n}</div>
               </div>
@@ -1251,6 +1253,7 @@ function renderTutorialLetter(basePath, exam) {
             <div class="page-card">
               <img src="${basePath}/${exam.imageFolder}_pagina_${String(n).padStart(3, '0')}.png" 
                    alt="Página ${n}" loading="lazy"
+                   onclick="openImageModal(this)"
                    onerror="this.style.display='none'">
               <div class="page-card-caption">Página ${n}</div>
             </div>
@@ -1275,6 +1278,7 @@ function renderTutorialSolution(solPath, solution) {
             <div class="page-card">
               <img src="${solPath}/${solution.folder}_pagina_${String(n).padStart(3, '0')}.png" 
                    alt="Solución página ${n}" loading="lazy"
+                   onclick="openImageModal(this)"
                    onerror="this.style.display='none'">
               <div class="page-card-caption">Solución página ${n}</div>
             </div>
@@ -1390,8 +1394,8 @@ function renderStepCard(step, index, total, isScene = false) {
         ${step.image ? `
           <div class="step-image-wrapper">
             ${step.annotation ? `<div class="step-image-caption">🔍 ${escapeHtml(step.annotation)}</div>` : ''}
-            <img src="${step.image}" alt="Imagen del paso ${index + 1}" loading="lazy" class="step-image"
-                 onclick="openStepImageModal('${step.image}')">
+             <img src="${step.image}" alt="Imagen del paso ${index + 1}" loading="lazy" class="step-image"
+                  onclick="openImageModal(this)">
           </div>
         ` : ''}
       </div>
@@ -1399,17 +1403,150 @@ function renderStepCard(step, index, total, isScene = false) {
   `;
 }
 
-function openStepImageModal(src) {
+function openImageModal(el) {
+  const existing = document.querySelector('.image-modal');
+  if (existing) existing.remove();
+
+  const src = typeof el === 'string' ? el : el.src;
+
+  const gallery = (el && el.closest)
+    ? Array.from(el.closest('.page-gallery')?.querySelectorAll('img') || [el])
+    : [el];
+
+  const sources = gallery.map(img => img.src || img);
+  let currentIndex = sources.indexOf(src);
+  if (currentIndex === -1) currentIndex = 0;
+
+  const hasGallery = sources.length > 1;
+
   const modal = document.createElement('div');
   modal.className = 'image-modal';
   modal.innerHTML = `
-    <div class="image-modal-backdrop" onclick="this.parentElement.remove()"></div>
-    <div class="image-modal-content">
-      <button class="image-modal-close" onclick="this.closest('.image-modal').remove()">✕</button>
-      <img src="${src}" alt="Vista ampliada">
+    <div class="image-modal-backdrop"></div>
+    <div class="image-modal-toolbar">
+      <button class="image-modal-tool" data-action="zoom-out" title="Alejar">−</button>
+      <span class="image-modal-zoom-label">100%</span>
+      <button class="image-modal-tool" data-action="zoom-in" title="Acercar">+</button>
+      <button class="image-modal-tool" data-action="reset" title="Restablecer">↺</button>
+      ${hasGallery ? '<span class="image-modal-counter"></span>' : ''}
+      <button class="image-modal-close" data-action="close" title="Cerrar">✕</button>
     </div>
+    <div class="image-modal-content">
+      <img src="${src}" alt="Vista ampliada" draggable="false">
+    </div>
+    ${hasGallery ? `
+      <button class="image-modal-nav image-modal-nav-prev" data-action="prev" title="Anterior">‹</button>
+      <button class="image-modal-nav image-modal-nav-next" data-action="next" title="Siguiente">›</button>
+    ` : ''}
+    <div class="image-modal-hint">${hasGallery ? '← → cambiar página · ' : ''}Rueda para zoom · Arrastrar para mover · ESC para cerrar</div>
   `;
   document.body.appendChild(modal);
+
+  const img = modal.querySelector('img');
+  const label = modal.querySelector('.image-modal-zoom-label');
+  const counter = modal.querySelector('.image-modal-counter');
+  const state = { zoom: 1, panX: 0, panY: 0 };
+
+  function applyTransform() {
+    img.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+    label.textContent = Math.round(state.zoom * 100) + '%';
+    img.classList.toggle('zoomed', state.zoom > 1);
+  }
+
+  function setZoom(delta) {
+    state.zoom = Math.max(0.5, Math.min(6, state.zoom + delta));
+    applyTransform();
+  }
+
+  function resetZoom() {
+    state.zoom = 1;
+    state.panX = 0;
+    state.panY = 0;
+    applyTransform();
+  }
+
+  function loadImage(index) {
+    currentIndex = (index + sources.length) % sources.length;
+    img.src = sources[currentIndex];
+    resetZoom();
+    if (counter) counter.textContent = `${currentIndex + 1} / ${sources.length}`;
+  }
+
+  function navPrev() { loadImage(currentIndex - 1); }
+  function navNext() { loadImage(currentIndex + 1); }
+
+  if (counter) counter.textContent = `${currentIndex + 1} / ${sources.length}`;
+
+  modal.addEventListener('click', (e) => {
+    const action = e.target.closest('[data-action]')?.dataset.action;
+    if (action === 'close' || e.target.classList.contains('image-modal-backdrop')) {
+      cleanup();
+      return;
+    }
+    if (action === 'zoom-in') setZoom(0.25);
+    else if (action === 'zoom-out') setZoom(-0.25);
+    else if (action === 'reset') resetZoom();
+    else if (action === 'prev') navPrev();
+    else if (action === 'next') navNext();
+  });
+
+  modal.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    setZoom(e.deltaY > 0 ? -0.15 : 0.15);
+  }, { passive: false });
+
+  let dragging = false;
+  let startX, startY, startPanX, startPanY;
+
+  img.addEventListener('mousedown', (e) => {
+    if (state.zoom <= 1) return;
+    dragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startPanX = state.panX;
+    startPanY = state.panY;
+    e.preventDefault();
+  });
+
+  function onMove(e) {
+    if (!dragging) return;
+    state.panX = startPanX + (e.clientX - startX);
+    state.panY = startPanY + (e.clientY - startY);
+    applyTransform();
+  }
+
+  function onUp() {
+    dragging = false;
+  }
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+
+  function onKey(e) {
+    if (e.key === 'Escape') {
+      cleanup();
+    } else if (e.key === '+' || e.key === '=') {
+      setZoom(0.25);
+    } else if (e.key === '-') {
+      setZoom(-0.25);
+    } else if (e.key === '0') {
+      resetZoom();
+    } else if (e.key === 'ArrowLeft' && hasGallery) {
+      navPrev();
+    } else if (e.key === 'ArrowRight' && hasGallery) {
+      navNext();
+    }
+  }
+
+  document.addEventListener('keydown', onKey);
+
+  function cleanup() {
+    dragging = false;
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    document.removeEventListener('keydown', onKey);
+    modal.remove();
+  }
 }
 
 // ---------- UTILIDADES ----------
