@@ -22,6 +22,13 @@ const AppState = {
   }
 };
 
+// Base path for images: GitHub Pages serves app from /repo/app-estudio-pa/,
+// so images (at /repo/imagenes_pa2026/) need ../ from the app folder.
+// Vercel serves from root, so images are in ./imagenes_pa2026/.
+const IMAGES_BASE = window.location.hostname.includes('github.io')
+  ? '../imagenes_pa2026'
+  : './imagenes_pa2026';
+
 const content = document.getElementById('content');
 const pageTitle = document.getElementById('pageTitle');
 const sidebar = document.getElementById('sidebar');
@@ -233,8 +240,8 @@ function renderExams() {
 
 function renderExamDetail(exam) {
   const solution = STUDY_DATA.solutions.find(s => s.year === exam.year);
-  const basePath = `./imagenes_pa2026/${exam.imageFolder}`;
-  const solPath = solution ? `./imagenes_pa2026/${solution.folder}` : null;
+  const basePath = `${IMAGES_BASE}/${exam.imageFolder}`;
+  const solPath = solution ? `${IMAGES_BASE}/${solution.folder}` : null;
 
   content.innerHTML = `
     <div class="exam-detail">
@@ -1210,8 +1217,8 @@ function renderTutorialDetail(id) {
   const solution = STUDY_DATA.solutions.find(s => s.year === (exam ? exam.year : null));
   const activeTab = AppState.tutorialState.activeTab;
 
-  const basePath = exam ? `./imagenes_pa2026/${exam.imageFolder}` : null;
-  const solPath = solution ? `./imagenes_pa2026/${solution.folder}` : null;
+  const basePath = exam ? `${IMAGES_BASE}/${exam.imageFolder}` : null;
+  const solPath = solution ? `${IMAGES_BASE}/${solution.folder}` : null;
 
   content.innerHTML = `
     <div class="card" style="margin-bottom:16px">
