@@ -1,0 +1,4 @@
+{
+  "buildCommand": "cp -R ../imagenes_pa2026 ./imagenes_pa2026",
+  "outputDirectory": "."
+}

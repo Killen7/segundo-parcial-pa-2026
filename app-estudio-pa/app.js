@@ -233,8 +233,8 @@ function renderExams() {
 
 function renderExamDetail(exam) {
   const solution = STUDY_DATA.solutions.find(s => s.year === exam.year);
-  const basePath = `../imagenes_pa2026/${exam.imageFolder}`;
-  const solPath = solution ? `../imagenes_pa2026/${solution.folder}` : null;
+  const basePath = `./imagenes_pa2026/${exam.imageFolder}`;
+  const solPath = solution ? `./imagenes_pa2026/${solution.folder}` : null;
 
   content.innerHTML = `
     <div class="exam-detail">
@@ -1210,8 +1210,8 @@ function renderTutorialDetail(id) {
   const solution = STUDY_DATA.solutions.find(s => s.year === (exam ? exam.year : null));
   const activeTab = AppState.tutorialState.activeTab;
 
-  const basePath = exam ? `../imagenes_pa2026/${exam.imageFolder}` : null;
-  const solPath = solution ? `../imagenes_pa2026/${solution.folder}` : null;
+  const basePath = exam ? `./imagenes_pa2026/${exam.imageFolder}` : null;
+  const solPath = solution ? `./imagenes_pa2026/${solution.folder}` : null;
 
   content.innerHTML = `
     <div class="card" style="margin-bottom:16px">
