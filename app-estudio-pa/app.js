@@ -818,6 +818,25 @@ function renderLabDiagramSvg() {
   return renderDcSvg(state.objects, state.messages, { className: 'dc-svg' });
 }
 
+function _segIntersectsSeg(x1, y1, x2, y2, x3, y3, x4, y4) {
+  const d1x = x2 - x1, d1y = y2 - y1;
+  const d2x = x4 - x3, d2y = y4 - y3;
+  const denom = d1x * d2y - d1y * d2x;
+  if (Math.abs(denom) < 1e-9) return false;
+  const t = ((x3 - x1) * d2y - (y3 - y1) * d2x) / denom;
+  const u = ((x3 - x1) * d1y - (y3 - y1) * d1x) / denom;
+  return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+}
+
+function _segIntersectsRect(x1, y1, x2, y2, rx, ry, rw, rh) {
+  return (
+    _segIntersectsSeg(x1, y1, x2, y2, rx, ry, rx + rw, ry) ||
+    _segIntersectsSeg(x1, y1, x2, y2, rx, ry + rh, rx + rw, ry + rh) ||
+    _segIntersectsSeg(x1, y1, x2, y2, rx, ry, rx, ry + rh) ||
+    _segIntersectsSeg(x1, y1, x2, y2, rx + rw, ry, rx + rw, ry + rh)
+  );
+}
+
 function renderDcSvg(objects, messages, options = {}) {
   if (objects.length === 0) {
     return `<div class="empty-state"><div class="empty-state-icon">📭</div>No hay objetos para dibujar.</div>`;
@@ -899,11 +918,40 @@ function renderDcSvg(objects, messages, options = {}) {
     const ex = x2 - dx;
     const ey = y2 - dy;
 
+    // Check if the straight line crosses any non-endpoint object
+    let crossesObject = false;
+    let curveSide = 1;
+    if (!isSelf) {
+      objects.forEach(obj => {
+        if (obj.name === m.from || obj.name === m.to) return;
+        const op = objPositions[obj.name];
+        if (_segIntersectsRect(sx, sy, ex, ey, op.x, op.y, objWidth, objHeight)) {
+          crossesObject = true;
+          const cross = (op.cx - sx) * (ey - sy) - (op.cy - sy) * (ex - sx);
+          if (cross > 0) curveSide = -1;
+        }
+      });
+    }
+
     let pathD;
+    let midX, midY;
     if (isSelf) {
       pathD = `M ${sx + 20} ${sy - 10} L ${sx + 50} ${sy - 10} L ${sx + 50} ${sy + 25} L ${ex + 4} ${ey}`;
+      midX = sx + 38;
+      midY = sy - 18;
+    } else if (crossesObject) {
+      const lineAngle = Math.atan2(ey - sy, ex - sx);
+      const perpAngle = lineAngle + Math.PI / 2;
+      const curveAmount = 55 + pairIndex * 15;
+      const cpX = (sx + ex) / 2 + Math.cos(perpAngle) * curveAmount * curveSide;
+      const cpY = (sy + ey) / 2 + Math.sin(perpAngle) * curveAmount * curveSide;
+      pathD = `M ${sx} ${sy} Q ${cpX.toFixed(1)} ${cpY.toFixed(1)} ${ex} ${ey}`;
+      midX = 0.25 * sx + 0.5 * cpX + 0.25 * ex;
+      midY = 0.25 * sy + 0.5 * cpY + 0.25 * ey;
     } else {
       pathD = `M ${sx} ${sy} L ${ex} ${ey}`;
+      midX = (sx + ex) / 2;
+      midY = (sy + ey) / 2;
     }
 
     const strokeColor = isReturn ? 'var(--text-muted)' : 'var(--text-primary)';
@@ -912,21 +960,21 @@ function renderDcSvg(objects, messages, options = {}) {
 
     svg += `<path d="${pathD}" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-dasharray="${strokeDash}" marker-end="${marker}" />`;
 
-    // Label position: midpoint plus offset perpendicular to the line
-    let mx, my;
-    if (isSelf) {
-      mx = sx + 38;
-      my = sy - 18;
-    } else {
-      mx = (sx + ex) / 2;
-      my = (sy + ey) / 2;
-    }
+    // Label position: use midpoint (already computed for curves)
+    let mx = midX;
+    let my = midY;
 
-    // Perpendicular offset to avoid overlapping labels
-    if (!isSelf) {
+    // Perpendicular offset to avoid overlapping labels (only for straight lines)
+    if (!isSelf && !crossesObject) {
       const perpAngle = angle + Math.PI / 2;
       const offsetDir = pairIndex % 2 === 0 ? 1 : -1;
-      const offsetDist = 22 + Math.floor(pairIndex / 2) * 18;
+      const offsetDist = 25 + Math.floor(pairIndex / 2) * 20;
+
+      // For same-pair messages, also offset along the line to avoid overlap
+      const alongFrac = pairIndex === 0 ? 0.5 : (pairIndex % 2 === 0 ? 0.35 : 0.65);
+      mx = sx + (ex - sx) * alongFrac;
+      my = sy + (ey - sy) * alongFrac;
+
       mx += Math.cos(perpAngle) * offsetDist * offsetDir;
       my += Math.sin(perpAngle) * offsetDist * offsetDir;
     }
