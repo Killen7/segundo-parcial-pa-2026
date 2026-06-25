@@ -1,4 +1,5 @@
 {
-  "buildCommand": "cp -R ../imagenes_pa2026 ./imagenes_pa2026",
-  "outputDirectory": "."
+  "framework": null,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
 }
